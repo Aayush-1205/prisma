@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// SQLite
+// datasource db {
+//   provider = "sqlite"
+//   url      = env("DATABASE_URL")
+// }
+
+// PostgresQL
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String @id @default(cuid())
+  email          String @unique
+  hashedPassword String
+  posts          Post[]
+}
+
+model Post {
+  // the downside of this autoincrement is that if you use the the ID in your application then your users may kind of figure out information about your application.
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String
+  imageUrl  String?
+  // this is for only when there is only one user
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  published Boolean? @default(false)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  // author    User[] // this for many-to-many relations, when there are multiple user with a collab of one post
+
+  // @@unique([title, content])
+  // instead of adding infront of it
+
+  // @@map("post") // this can change the name of the model for prisma studio only
+  // we can also add this infront the title, etc
+
+  @@index([slug])
+}
