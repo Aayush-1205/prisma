@@ -15,7 +15,7 @@ export async function createPost(formData: FormData) {
             content: formData.get("content") as string,
             author:{
               connect: {
-                  email: "Example@gmail.com"
+                  email: "example.123@gmail.com"
               }
             }
           },
